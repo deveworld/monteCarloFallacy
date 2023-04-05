@@ -8,14 +8,16 @@ from settings import *
 class Evaluator(object):
 	def __init__(self):
 		super(Evaluator, self).__init__()
+		self.iter = 0
 		self.strategies = []
 		self.strategies.append(RandomStrategy())
 		self.strategies.append(GamblerStrategy())
-		# self.strategies.append(MartingaleRandomStrategy())
-		# self.strategies.append(MartingaleGamblerStrategy())
 		self.strategies.append(RegressionStrategy())
+		self.strategies.append(MartingaleRandomStrategy())
+		self.strategies.append(MartingaleGamblerStrategy())
 
 	def eval(self):
+		random.seed(random.randrange(sys.maxsize))
 		result = bool(random.getrandbits(1))
 
 		for strategy in self.strategies:
@@ -24,7 +26,7 @@ class Evaluator(object):
 	
 	
 	def get_log_text(self) -> str:
-		log_text = ""
+		log_text = f"{self.iter}, "
 		for strategy in self.strategies:
 			log_text += f"{strategy.__class__.__name__}: {strategy.money:.0f}    "
 		return log_text
@@ -33,6 +35,8 @@ class Evaluator(object):
 		for i in range(Iteration):
 			self.eval()
 			print(self.get_log_text(), end="\r")
+			self.iter += 1
+			time.sleep(0.01)
 		print()
 
 
